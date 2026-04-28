@@ -1015,8 +1015,9 @@ function slPerPage() {
 }
 
 function slPages(items, pp) {
+  if (items.length <= pp) return [items];
   const out = [];
-  for (let i = 0; i < items.length; i += pp) out.push(items.slice(i, i + pp));
+  for (let i = 0; i <= items.length - pp; i++) out.push(items.slice(i, i + pp));
   return out;
 }
 
