@@ -1009,15 +1009,17 @@ const PRODUCTS = {
 /* ── SLIDER ───────────────────────────────────────────────────────── */
 const SL = {};
 
-function slPerPage() {
-  const w = window.innerWidth;
-  return w >= 900 ? 3 : w >= 560 ? 2 : 1;
+function slPerPage(n) {
+  const ideal = window.innerWidth >= 900 ? 3 : window.innerWidth >= 560 ? 2 : 1;
+  for (let p = ideal; p >= 1; p--) {
+    if (n % p === 0) return p;
+  }
+  return 1;
 }
 
 function slPages(items, pp) {
-  if (items.length <= pp) return [items];
   const out = [];
-  for (let i = 0; i <= items.length - pp; i++) out.push(items.slice(i, i + pp));
+  for (let i = 0; i < items.length; i += pp) out.push(items.slice(i, i + pp));
   return out;
 }
 
@@ -1067,7 +1069,7 @@ function slInit(key) {
   if (!pw) return;
 
   const items = PRODUCTS[key];
-  const pp    = slPerPage();
+  const pp    = slPerPage(items.length);
   const pages = slPages(items, pp);
   const N     = pages.length;
   const cur   = (SL[key] && SL[key].N === N) ? SL[key].cur : 0;
