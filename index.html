@@ -68,7 +68,7 @@
     .btn-max {
       display: inline-flex; align-items: center; justify-content: center;
       width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
-      background: #0077FF; cursor: pointer;
+      background: var(--olive); color: var(--cream); cursor: pointer;
       transition: filter .2s ease, transform .15s ease;
       text-decoration: none; border: none;
     }
@@ -579,7 +579,7 @@
         Написать
       </a>
       <a href="#" class="btn-max btn-max-sm btn-hdr" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="7" fill="white" fill-opacity="0"/><path d="M5 7h3.5l3.5 6 3.5-6H19v10h-2.5v-6l-3 5h-2l-3-5v6H5V7z" fill="white"/></svg>
+        <svg width="20" height="20"><use href="#max-icon"/></svg>
       </a>
       <button class="ham" id="ham" aria-label="Открыть меню" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -605,7 +605,7 @@
         Написать в Telegram
       </a>
       <a href="#" class="btn-max btn-max-lg" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 7h3.5l3.5 6 3.5-6H19v10h-2.5v-6l-3 5h-2l-3-5v6H5V7z" fill="white"/></svg>
+        <svg width="24" height="24"><use href="#max-icon"/></svg>
       </a>
     </div>
   </div>
@@ -630,7 +630,7 @@
           Написать в Telegram
         </a>
         <a href="#" class="btn-max btn-max-lg" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 7h3.5l3.5 6 3.5-6H19v10h-2.5v-6l-3 5h-2l-3-5v6H5V7z" fill="white"/></svg>
+          <svg width="26" height="26"><use href="#max-icon"/></svg>
         </a>
         <a href="#menu" class="btn btn-ghost">Смотреть меню ↓</a>
       </div>
@@ -743,7 +743,7 @@
         Уточнить доставку
       </a>
       <a href="#" class="btn-max" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 7h3.5l3.5 6 3.5-6H19v10h-2.5v-6l-3 5h-2l-3-5v6H5V7z" fill="white"/></svg>
+        <svg width="22" height="22"><use href="#max-icon"/></svg>
       </a>
     </div>
   </div>
@@ -780,7 +780,7 @@
             Заказать подарочный набор
           </a>
           <a href="#" class="btn-max btn-max-lg" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 7h3.5l3.5 6 3.5-6H19v10h-2.5v-6l-3 5h-2l-3-5v6H5V7z" fill="white"/></svg>
+            <svg width="26" height="26"><use href="#max-icon"/></svg>
           </a>
         </div>
       </div>
@@ -808,7 +808,7 @@
         @vesnushkina
       </a>
       <a href="#" class="btn-max" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс" style="width:40px;height:40px;">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 7h3.5l3.5 6 3.5-6H19v10h-2.5v-6l-3 5h-2l-3-5v6H5V7z" fill="white"/></svg>
+        <svg width="22" height="22"><use href="#max-icon"/></svg>
       </a>
     </div>
     <p class="foot-copy">© 2025 Крошка. Все права защищены.</p>
@@ -851,7 +851,7 @@
         </a>
         <a id="modal-cta-max" href="#" target="_blank" rel="noopener noreferrer"
            class="btn-max" style="width:48px;height:48px;" aria-label="Заказать в Макс">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 7h3.5l3.5 6 3.5-6H19v10h-2.5v-6l-3 5h-2l-3-5v6H5V7z" fill="white"/></svg>
+          <svg width="22" height="22"><use href="#max-icon"/></svg>
         </a>
       </div>
     </div>
@@ -1186,5 +1186,16 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 </script>
+
+<!-- Max messenger logo symbol (speech bubble ring) -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="max-icon" viewBox="0 0 24 24" fill="none">
+      <path fill-rule="evenodd" clip-rule="evenodd"
+        d="M12 2C6.477 2 2 6.477 2 12C2 14.656 2.985 17.08 4.617 18.927L3 22.5L7.218 21.07C8.69 21.672 10.307 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2ZM12 7.5C14.485 7.5 16.5 9.515 16.5 12C16.5 14.485 14.485 16.5 12 16.5C9.515 16.5 7.5 14.485 7.5 12C7.5 9.515 9.515 7.5 12 7.5Z"
+        fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
 </body>
 </html>
