@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kroshkasweet.ru/sitemap.xml
