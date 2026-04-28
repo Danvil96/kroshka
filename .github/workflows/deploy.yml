@@ -1,4 +1,4 @@
-name: Deploy to kroshkabakery.ru
+name: Deploy to kroshkasweet.ru
 
 on:
   push:
@@ -24,4 +24,4 @@ jobs:
             --exclude='*.md' \
             --exclude='code*.html' \
             --exclude='screen*.png' \
-            . vilenchuk@103.76.52.108:/var/www/kroshkabakery.ru/
+            . vilenchuk@103.76.52.108:/var/www/kroshkasweet.ru/
