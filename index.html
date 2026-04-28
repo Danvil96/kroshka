@@ -256,7 +256,8 @@
     @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
     /* ── SLIDER ────────────────────────────── */
-    .sl-viewport { overflow: hidden; }
+    .sl-clip { clip-path: inset(-24px -16px); }
+    .sl-viewport { overflow: visible; }
     .sl-track { display: flex; }
     .sl-page { flex-shrink: 0; display: grid; gap: var(--gap); align-items: start; }
     .sl-controls {
@@ -683,7 +684,9 @@
     </div>
 
     <div id="panel-mochi" class="tab-panel active" role="tabpanel">
-      <div class="sl-viewport" id="vp-mochi"><div class="sl-track" id="track-mochi"></div></div>
+      <div class="sl-clip">
+        <div class="sl-viewport" id="vp-mochi"><div class="sl-track" id="track-mochi"></div></div>
+      </div>
       <div class="sl-controls">
         <button class="sl-arrow" data-sl="mochi" data-dir="-1" aria-label="Назад"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
         <div class="sl-dots" id="dots-mochi"></div>
@@ -691,7 +694,9 @@
       </div>
     </div>
     <div id="panel-donuts" class="tab-panel" role="tabpanel">
-      <div class="sl-viewport" id="vp-donuts"><div class="sl-track" id="track-donuts"></div></div>
+      <div class="sl-clip">
+        <div class="sl-viewport" id="vp-donuts"><div class="sl-track" id="track-donuts"></div></div>
+      </div>
       <div class="sl-controls">
         <button class="sl-arrow" data-sl="donuts" data-dir="-1" aria-label="Назад"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
         <div class="sl-dots" id="dots-donuts"></div>
