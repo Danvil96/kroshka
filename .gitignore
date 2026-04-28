@@ -1,0 +1,5 @@
+.DS_Store
+*.old
+code*.html
+screen*.png
+design.md
