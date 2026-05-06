@@ -418,6 +418,27 @@
       transition: background .2s;
     }
     .modal-close:hover { background: var(--cream); }
+    .gallery-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,.85); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; line-height: 1; z-index: 2;
+      transition: background .2s;
+    }
+    .gallery-arrow:hover { background: var(--cream); }
+    #gallery-prev { left: 14px; }
+    #gallery-next { right: 14px; }
+    .gallery-dots {
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px; align-items: center;
+    }
+    .gallery-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(255,255,255,.5); cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+    .gallery-dot.active { background: #fff; transform: scale(1.35); }
     .modal-scroll {
       padding: 26px 28px; overflow-y: auto; flex: 1;
     }
@@ -895,6 +916,9 @@
       <img id="modal-img" src="" alt="" loading="lazy" />
       <span class="modal-badge-ov" id="modal-badge-ov" style="display:none"></span>
       <button class="modal-close" id="modal-close" aria-label="Закрыть">✕</button>
+      <button class="gallery-arrow" id="gallery-prev" aria-label="Предыдущее фото" style="display:none">‹</button>
+      <button class="gallery-arrow" id="gallery-next" aria-label="Следующее фото" style="display:none">›</button>
+      <div class="gallery-dots" id="gallery-dots" style="display:none"></div>
     </div>
     <div class="modal-scroll">
       <h2 class="modal-name" id="modal-name"></h2>
@@ -1024,6 +1048,12 @@ const PRODUCTS = {
       price: 'Уточнить цену',
       badge: 'Хит',
       img: '1.webp',
+      imgs: [
+        'конфетный набор/сникерс.JPG',
+        'конфетный набор/баунти.JPG',
+        'конфетный набор/рафаэло.JPG',
+        'конфетный набор/киндер буэно.JPG',
+      ],
       desc: 'Четыре доната с начинками из любимых конфет: Сникерс, Баунти, Рафаэлло и Киндер Буэно. Каждый — отдельное удовольствие.',
       ingr: 'Сникерс: карамель, арахис, шоколад. Баунти: кокосовое молоко, шоколад. Рафаэлло: кокос, миндаль, ваниль. Киндер Буэно: фундучный крем, вафля, молочный шоколад.',
       kcal: '—', prot: '—', fat: '—', carbs: '—',
@@ -1227,11 +1257,42 @@ function findProduct(id, cat) {
   return PRODUCTS[cat === 'mochi' ? 'mochi' : 'donuts'].find(p => p.id === id);
 }
 
+/* ── Gallery state ── */
+let galleryImgs = [];
+let galleryIdx  = 0;
+
+function showGallerySlide(idx) {
+  galleryIdx = (idx + galleryImgs.length) % galleryImgs.length;
+  document.getElementById('modal-img').src = galleryImgs[galleryIdx];
+  document.querySelectorAll('#gallery-dots .gallery-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === galleryIdx);
+  });
+}
+
+function initGallery(imgs) {
+  const hasMany = imgs.length > 1;
+  document.getElementById('gallery-prev').style.display = hasMany ? '' : 'none';
+  document.getElementById('gallery-next').style.display = hasMany ? '' : 'none';
+  const dotsEl = document.getElementById('gallery-dots');
+  dotsEl.style.display = hasMany ? 'flex' : 'none';
+  dotsEl.innerHTML = '';
+  imgs.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', `Фото ${i + 1}`);
+    d.addEventListener('click', () => showGallerySlide(i));
+    dotsEl.appendChild(d);
+  });
+}
+
 function openModal(id, cat) {
   const p = findProduct(id, cat);
   if (!p) return;
 
-  document.getElementById('modal-img').src = p.img;
+  galleryImgs = p.imgs && p.imgs.length ? p.imgs : [p.img];
+  galleryIdx  = 0;
+  initGallery(galleryImgs);
+  document.getElementById('modal-img').src = galleryImgs[0];
   document.getElementById('modal-img').alt = p.name;
 
   const badge = document.getElementById('modal-badge-ov');
@@ -1260,15 +1321,34 @@ function closeModal() {
   document.body.classList.remove('locked');
 }
 
+document.getElementById('gallery-prev').addEventListener('click', () => showGallerySlide(galleryIdx - 1));
+document.getElementById('gallery-next').addEventListener('click', () => showGallerySlide(galleryIdx + 1));
+
 document.getElementById('modal-close').addEventListener('click', closeModal);
 modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); return; }
+  if (!modal.classList.contains('open') || galleryImgs.length < 2) return;
+  if (e.key === 'ArrowLeft')  showGallerySlide(galleryIdx - 1);
+  if (e.key === 'ArrowRight') showGallerySlide(galleryIdx + 1);
+});
 
 /* Touch swipe-down to close on mobile */
 let touchStartY = 0;
 modalBox.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
 modalBox.addEventListener('touchend',   e => {
   if (e.changedTouches[0].clientY - touchStartY > 80) closeModal();
+}, { passive: true });
+
+/* Touch swipe left/right to navigate gallery */
+const imgWrap = document.querySelector('.modal-img-wrap');
+let imgSwipeX = 0;
+imgWrap.addEventListener('touchstart', e => { imgSwipeX = e.touches[0].clientX; }, { passive: true });
+imgWrap.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - imgSwipeX;
+  if (Math.abs(dx) > 40 && galleryImgs.length > 1) {
+    showGallerySlide(dx < 0 ? galleryIdx + 1 : galleryIdx - 1);
+  }
 }, { passive: true });
 
 /* ── MOBILE NAV ───────────────────────────────────────────────────── */
