@@ -1122,7 +1122,12 @@ function slPerPage(n) {
 
 function slPages(items, pp) {
   const out = [];
-  for (let i = 0; i < items.length; i += pp) out.push(items.slice(i, i + pp));
+  for (let i = 0; i < items.length; i += pp) {
+    const page = items.slice(i, i + pp);
+    for (let j = 0; j < pp - page.length; j++)
+      page.push(items[(i + page.length + j) % items.length]);
+    out.push(page);
+  }
   return out;
 }
 
