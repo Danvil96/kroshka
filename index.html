@@ -1119,17 +1119,6 @@ function slPerPage(n) {
   return Math.min(ideal, n);
 }
 
-function slPages(items, pp) {
-  const out = [];
-  for (let i = 0; i < items.length; i += pp) {
-    const page = items.slice(i, i + pp);
-    for (let j = 0; j < pp - page.length; j++)
-      page.push(items[(i + page.length + j) % items.length]);
-    out.push(page);
-  }
-  return out;
-}
-
 function slCardHTML(p) {
   const cat = p.id[0] === 'm' ? 'mochi' : 'donuts';
   return `<article class="p-card" tabindex="0" role="button"
@@ -1158,9 +1147,9 @@ function slBind(track) {
   });
 }
 
-function slSetPos(s, ti, animate) {
+function slSetPos(s, idx, animate) {
   s.track.style.transition = animate ? 'transform .42s cubic-bezier(.25,.1,.25,1)' : 'none';
-  s.track.style.transform  = `translateX(${-ti * s.pw}px)`;
+  s.track.style.transform  = `translateX(${-(s.pp + idx) * s.iw}px)`;
   if (!animate) s.track.offsetHeight;
 }
 
@@ -1176,40 +1165,41 @@ function slInit(key) {
   if (!pw) return;
 
   const items = PRODUCTS[key];
-  const pp    = slPerPage(items.length);
-  const pages = slPages(items, pp);
-  const N     = pages.length;
-  const cur   = (SL[key] && SL[key].N === N) ? SL[key].cur : 0;
+  const n     = items.length;
+  const pp    = slPerPage(n);
+  const iw    = pw / pp;
 
-  /* track layout: [lastClone | page0…pageN-1 | firstClone] */
-  const all = [pages[N - 1], ...pages, pages[0]];
-  track.innerHTML = all.map(pg =>
-    `<div class="sl-page" style="width:${pw}px;grid-template-columns:repeat(${pp},1fr)">${pg.map(slCardHTML).join('')}</div>`
+  /* layout: [last pp items as left clones] + [all real items] + [first pp items as right clones] */
+  const all = [...items.slice(-pp), ...items, ...items.slice(0, pp)];
+  track.innerHTML = all.map(p =>
+    `<div style="width:${iw}px;flex-shrink:0;padding:0 calc(var(--gap)/2);box-sizing:border-box">${slCardHTML(p)}</div>`
   ).join('');
-  track.style.width = (all.length * pw) + 'px';
+  track.style.width = (all.length * iw) + 'px';
 
-  dotsEl.innerHTML = pages.map((_, i) =>
-    `<button class="sl-dot${i === cur ? ' active' : ''}" aria-label="Страница ${i + 1}"></button>`
+  const cur = (SL[key] && SL[key].n === n) ? SL[key].cur : 0;
+
+  dotsEl.innerHTML = items.map((_, i) =>
+    `<button class="sl-dot${i === cur ? ' active' : ''}" aria-label="Слайд ${i + 1}"></button>`
   ).join('');
   dotsEl.querySelectorAll('.sl-dot').forEach((d, i) =>
     d.addEventListener('click', () => slGoto(SL[key], i))
   );
 
-  const s = SL[key] = { vp, track, dotsEl, N, pw, cur, busy: false };
-  slSetPos(s, cur + 1, false);
+  const s = SL[key] = { vp, track, dotsEl, n, pp, iw, pw, cur, busy: false };
+  slSetPos(s, cur, false);
   slBind(track);
 }
 
 function slMove(s, dir) {
   if (s.busy) return;
   s.busy = true;
-  const ti = s.cur + 1 + dir;
-  s.cur = ((s.cur + dir) + s.N) % s.N;
-  slSetPos(s, ti, true);
+  const target = s.cur + dir;
+  s.track.style.transition = 'transform .42s cubic-bezier(.25,.1,.25,1)';
+  s.track.style.transform  = `translateX(${-(s.pp + target) * s.iw}px)`;
+  s.cur = ((target % s.n) + s.n) % s.n;
   slDots(s);
   setTimeout(() => {
-    if (ti === s.N + 1) slSetPos(s, 1, false);
-    if (ti === 0)       slSetPos(s, s.N, false);
+    slSetPos(s, s.cur, false);
     s.busy = false;
   }, 450);
 }
@@ -1217,7 +1207,7 @@ function slMove(s, dir) {
 function slGoto(s, index) {
   if (s.busy) return;
   s.cur = index;
-  slSetPos(s, index + 1, true);
+  slSetPos(s, index, true);
   slDots(s);
 }
 
