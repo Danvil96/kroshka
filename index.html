@@ -1410,6 +1410,9 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
+/* ── MAX LINKS ────────────────────────────────────────────────────── */
+document.querySelectorAll('a[aria-label="Написать в Макс"]').forEach(a => a.href = MAX);
+
 /* ── SMOOTH NAV SCROLL ────────────────────────────────────────────── */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
