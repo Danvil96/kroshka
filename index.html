@@ -1147,15 +1147,22 @@ function slBind(track) {
   });
 }
 
-function slSetPos(s, idx, animate) {
+function slSetPos(s, page, animate) {
   s.track.style.transition = animate ? 'transform .42s cubic-bezier(.25,.1,.25,1)' : 'none';
-  s.track.style.transform  = `translateX(${-(s.pp + idx) * s.iw}px)`;
+  s.track.style.transform  = `translateX(${-page * s.pw}px)`;
   if (!animate) s.track.offsetHeight;
 }
 
 function slDots(s) {
-  const activeDot = Math.floor(s.cur / s.pp);
-  s.dotsEl.querySelectorAll('.sl-dot').forEach((d, i) => d.classList.toggle('active', i === activeDot));
+  s.dotsEl.querySelectorAll('.sl-dot').forEach((d, i) => d.classList.toggle('active', i === s.cur));
+}
+
+function slArrows(s) {
+  document.querySelectorAll(`.sl-arrow[data-sl="${s.key}"]`).forEach(btn => {
+    const dir = +btn.dataset.dir;
+    btn.disabled = (dir === -1 && s.cur === 0) || (dir === 1 && s.cur === s.nPages - 1);
+    btn.style.opacity = btn.disabled ? '0.3' : '';
+  });
 }
 
 function slInit(key) {
@@ -1165,52 +1172,49 @@ function slInit(key) {
   const pw     = vp.offsetWidth;
   if (!pw) return;
 
-  const items = PRODUCTS[key];
-  const n     = items.length;
-  const pp    = slPerPage(n);
-  const iw    = pw / pp;
+  const items  = PRODUCTS[key];
+  const n      = items.length;
+  const pp     = slPerPage(n);
+  const iw     = pw / pp;
+  const nPages = Math.ceil(n / pp);
+  const cur    = (SL[key] && SL[key].key === key) ? Math.min(SL[key].cur, nPages - 1) : 0;
 
-  /* layout: [last pp items as left clones] + [all real items] + [first pp items as right clones] */
-  const all = [...items.slice(-pp), ...items, ...items.slice(0, pp)];
-  track.innerHTML = all.map(p =>
+  track.innerHTML = items.map(p =>
     `<div style="width:${iw}px;flex-shrink:0;padding:0 calc(var(--gap)/2);box-sizing:border-box">${slCardHTML(p)}</div>`
   ).join('');
-  track.style.width = (all.length * iw) + 'px';
+  track.style.width = (n * iw) + 'px';
 
-  const cur = (SL[key] && SL[key].n === n) ? SL[key].cur : 0;
-  const nd  = Math.ceil(n / pp);
-
-  dotsEl.innerHTML = Array.from({length: nd}, (_, i) =>
-    `<button class="sl-dot${i === Math.floor(cur / pp) ? ' active' : ''}" aria-label="Страница ${i + 1}"></button>`
+  dotsEl.innerHTML = Array.from({length: nPages}, (_, i) =>
+    `<button class="sl-dot${i === cur ? ' active' : ''}" aria-label="Страница ${i + 1}"></button>`
   ).join('');
   dotsEl.querySelectorAll('.sl-dot').forEach((d, i) =>
-    d.addEventListener('click', () => slGoto(SL[key], i * pp))
+    d.addEventListener('click', () => slGoto(SL[key], i))
   );
 
-  const s = SL[key] = { vp, track, dotsEl, n, pp, iw, pw, cur, busy: false };
+  const s = SL[key] = { key, vp, track, dotsEl, n, pp, iw, pw, nPages, cur, busy: false };
   slSetPos(s, cur, false);
+  slArrows(s);
   slBind(track);
 }
 
 function slMove(s, dir) {
   if (s.busy) return;
+  const next = s.cur + dir;
+  if (next < 0 || next >= s.nPages) return;
   s.busy = true;
-  const target = s.cur + dir * s.pp;
-  s.track.style.transition = 'transform .42s cubic-bezier(.25,.1,.25,1)';
-  s.track.style.transform  = `translateX(${-(s.pp + target) * s.iw}px)`;
-  s.cur = ((target % s.n) + s.n) % s.n;
+  s.cur = next;
+  slSetPos(s, s.cur, true);
   slDots(s);
-  setTimeout(() => {
-    slSetPos(s, s.cur, false);
-    s.busy = false;
-  }, 450);
+  slArrows(s);
+  setTimeout(() => { s.busy = false; }, 450);
 }
 
-function slGoto(s, index) {
+function slGoto(s, page) {
   if (s.busy) return;
-  s.cur = index;
-  slSetPos(s, index, true);
+  s.cur = page;
+  slSetPos(s, page, true);
   slDots(s);
+  slArrows(s);
 }
 
 function slSwipe(key) {
