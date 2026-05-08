@@ -1117,10 +1117,7 @@ const SL = {};
 
 function slPerPage(n) {
   const ideal = window.innerWidth >= 900 ? 3 : window.innerWidth >= 560 ? 2 : 1;
-  for (let p = ideal; p >= 1; p--) {
-    if (n % p === 0) return p;
-  }
-  return 1;
+  return Math.min(ideal, n);
 }
 
 function slPages(items, pp) {
