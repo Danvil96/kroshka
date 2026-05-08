@@ -1154,7 +1154,8 @@ function slSetPos(s, idx, animate) {
 }
 
 function slDots(s) {
-  s.dotsEl.querySelectorAll('.sl-dot').forEach((d, i) => d.classList.toggle('active', i === s.cur));
+  const activeDot = Math.floor(s.cur / s.pp);
+  s.dotsEl.querySelectorAll('.sl-dot').forEach((d, i) => d.classList.toggle('active', i === activeDot));
 }
 
 function slInit(key) {
@@ -1177,12 +1178,13 @@ function slInit(key) {
   track.style.width = (all.length * iw) + 'px';
 
   const cur = (SL[key] && SL[key].n === n) ? SL[key].cur : 0;
+  const nd  = Math.ceil(n / pp);
 
-  dotsEl.innerHTML = items.map((_, i) =>
-    `<button class="sl-dot${i === cur ? ' active' : ''}" aria-label="Слайд ${i + 1}"></button>`
+  dotsEl.innerHTML = Array.from({length: nd}, (_, i) =>
+    `<button class="sl-dot${i === Math.floor(cur / pp) ? ' active' : ''}" aria-label="Страница ${i + 1}"></button>`
   ).join('');
   dotsEl.querySelectorAll('.sl-dot').forEach((d, i) =>
-    d.addEventListener('click', () => slGoto(SL[key], i))
+    d.addEventListener('click', () => slGoto(SL[key], i * pp))
   );
 
   const s = SL[key] = { vp, track, dotsEl, n, pp, iw, pw, cur, busy: false };
