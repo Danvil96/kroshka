@@ -1195,7 +1195,7 @@ function slInit(key) {
 function slMove(s, dir) {
   if (s.busy) return;
   s.busy = true;
-  const target = s.cur + dir;
+  const target = s.cur + dir * s.pp;
   s.track.style.transition = 'transform .42s cubic-bezier(.25,.1,.25,1)';
   s.track.style.transform  = `translateX(${-(s.pp + target) * s.iw}px)`;
   s.cur = ((target % s.n) + s.n) % s.n;
