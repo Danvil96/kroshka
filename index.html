@@ -1180,7 +1180,7 @@ function slInit(key) {
   /* track layout: [lastClone | page0…pageN-1 | firstClone] */
   const all = [pages[N - 1], ...pages, pages[0]];
   track.innerHTML = all.map(pg =>
-    `<div class="sl-page" style="width:${pw}px;grid-template-columns:repeat(${pg.length},1fr)">${pg.map(slCardHTML).join('')}</div>`
+    `<div class="sl-page" style="width:${pw}px;grid-template-columns:repeat(${pp},1fr)">${pg.map(slCardHTML).join('')}</div>`
   ).join('');
   track.style.width = (all.length * pw) + 'px';
 
