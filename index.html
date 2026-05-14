@@ -137,6 +137,30 @@
     .btn-max-lg { width: 54px; height: 54px; }
     .btn-max-sm { width: 38px; height: 38px; }
 
+    /* ── ORDER DROPDOWN ──────────────────── */
+    .order-wrap { position: relative; display: inline-flex; }
+    .order-drop {
+      position: absolute; top: calc(100% + 8px); left: 0;
+      background: var(--white); border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(61,50,41,.16);
+      padding: 8px; min-width: 210px;
+      opacity: 0; pointer-events: none; transform: translateY(-6px);
+      transition: opacity .2s ease, transform .2s ease;
+      z-index: 200;
+    }
+    .order-wrap.open .order-drop { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .order-drop a {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; border-radius: 12px;
+      color: var(--text); text-decoration: none;
+      font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;
+      transition: background .15s ease;
+    }
+    .order-drop a:hover { background: var(--cream); }
+    .order-drop a svg { flex-shrink: 0; }
+    .order-chevron { transition: transform .2s ease; }
+    .order-wrap.open .order-chevron { transform: rotate(180deg); }
+
     /* ── SCROLL REVEAL ─────────────────────── */
     .reveal {
       opacity: 0; transform: translateY(28px);
@@ -677,12 +701,15 @@
 
     <div class="hdr-actions">
       <a href="https://t.me/+79309330601" target="_blank" rel="noopener noreferrer"
-         class="btn btn-blush btn-hdr" style="padding:10px 20px;font-size:13px;">
-        <svg class="tg-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-2.012 9.47c-.145.648-.537.806-1.084.502l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.06 14.66l-2.948-.92c-.64-.204-.653-.64.136-.95l11.521-4.44c.535-.194 1.003.131.793.898z"/></svg>
-        Написать
+         class="btn-max btn-max-sm" style="background:var(--blush);color:var(--text);" aria-label="Написать в Telegram">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-2.012 9.47c-.145.648-.537.806-1.084.502l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.06 14.66l-2.948-.92c-.64-.204-.653-.64.136-.95l11.521-4.44c.535-.194 1.003.131.793.898z"/></svg>
       </a>
-      <a href="#" class="btn-max btn-max-sm btn-hdr btn-max-hdr" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс">
-        <svg width="20" height="20"><use href="#max-icon"/></svg>
+      <a href="#" class="btn-max btn-max-sm btn-max-hdr" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс">
+        <svg width="18" height="18"><use href="#max-icon"/></svg>
+      </a>
+      <a href="https://flowwow.com/shop/kroshkaf-1570/" target="_blank" rel="noopener noreferrer"
+         class="btn-max btn-max-sm" style="background:var(--blush);color:var(--text);" aria-label="Открыть на Flowwow">
+        <svg width="24" height="24" viewBox="0 0 200 200" fill="none"><path d="M137.503 108.737C121.169 108.737 107.834 123.55 100.336 143.852V133.365C100.336 115.558 93.5056 108.737 76.1721 108.737H55C58.3321 134.862 76.1654 154 100.836 154C124.001 154 144.333 134.197 144.333 115.558C144.333 110.734 142.334 108.737 137.503 108.737ZM137.169 65.6371C137.169 55.9816 135.003 48.3291 130.838 48.3291C126.673 48.3291 120.835 55.3162 115.837 65.138C111.832 53.4862 107.001 46.0001 102.002 46.0001C97.0043 46.0001 90.5001 53.4862 84.5023 65.138C79.6708 54.6507 73.9996 49.3273 70.3343 49.3273C67.1688 49.3273 65.3361 52.6544 64.0033 57.8116C62.6705 62.9687 62.1707 69.4633 62.1707 74.9531C62.1707 93.9247 81.5034 104.412 100.836 104.412C117.503 104.412 128.506 99.0884 133.171 90.4311C136.836 83.7768 137.169 75.7849 137.169 65.6371Z" fill="currentColor"/></svg>
       </a>
       <button class="ham" id="ham" aria-label="Открыть меню" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -701,14 +728,17 @@
     <a href="#gifts"    class="drawer-link">Подарки</a>
   </nav>
   <div class="drawer-cta" style="margin-top:32px;">
-    <div style="display:flex;gap:10px;align-items:center;">
+    <div style="display:flex;gap:12px;align-items:center;">
       <a href="https://t.me/+79309330601" target="_blank" rel="noopener noreferrer"
-         class="btn btn-blush btn-lg" style="flex:1;justify-content:center;">
-        <svg class="tg-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-2.012 9.47c-.145.648-.537.806-1.084.502l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.06 14.66l-2.948-.92c-.64-.204-.653-.64.136-.95l11.521-4.44c.535-.194 1.003.131.793.898z"/></svg>
-        Написать в Telegram
+         class="btn-max" aria-label="Написать в Telegram" style="background:var(--blush);color:var(--text);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-2.012 9.47c-.145.648-.537.806-1.084.502l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.06 14.66l-2.948-.92c-.64-.204-.653-.64.136-.95l11.521-4.44c.535-.194 1.003.131.793.898z"/></svg>
       </a>
-      <a href="#" class="btn-max btn-max-lg" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс">
-        <svg width="24" height="24"><use href="#max-icon"/></svg>
+      <a href="#" class="btn-max" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс">
+        <svg width="20" height="20"><use href="#max-icon"/></svg>
+      </a>
+      <a href="https://flowwow.com/shop/kroshkaf-1570/" target="_blank" rel="noopener noreferrer"
+         class="btn-max" aria-label="Открыть на Flowwow" style="background:var(--blush);color:var(--text);">
+        <svg width="20" height="20" viewBox="36 36 128 128" fill="currentColor"><path d="M137.503 108.737C121.169 108.737 107.834 123.55 100.336 143.852V133.365C100.336 115.558 93.5056 108.737 76.1721 108.737H55C58.3321 134.862 76.1654 154 100.836 154C124.001 154 144.333 134.197 144.333 115.558C144.333 110.734 142.334 108.737 137.503 108.737ZM137.169 65.6371C137.169 55.9816 135.003 48.3291 130.838 48.3291C126.673 48.3291 120.835 55.3162 115.837 65.138C111.832 53.4862 107.001 46.0001 102.002 46.0001C97.0043 46.0001 90.5001 53.4862 84.5023 65.138C79.6708 54.6507 73.9996 49.3273 70.3343 49.3273C67.1688 49.3273 65.3361 52.6544 64.0033 57.8116C62.6705 62.9687 62.1707 69.4633 62.1707 74.9531C62.1707 93.9247 81.5034 104.412 100.836 104.412C117.503 104.412 128.506 99.0884 133.171 90.4311C136.836 83.7768 137.169 75.7849 137.169 65.6371Z"/></svg>
       </a>
     </div>
   </div>
@@ -726,14 +756,28 @@
         Нежные моти и трендовые донат-кейки — каждый десерт готовится вручную из натуральных ингредиентов.
       </p>
       <div class="hero-btns">
-        <a href="https://t.me/+79309330601" target="_blank" rel="noopener noreferrer"
-           class="btn btn-blush btn-lg" style="box-shadow:0 6px 24px rgba(233,196,187,.55);">
-          <svg class="tg-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-2.012 9.47c-.145.648-.537.806-1.084.502l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.06 14.66l-2.948-.92c-.64-.204-.653-.64.136-.95l11.521-4.44c.535-.194 1.003.131.793.898z"/></svg>
-          Написать в Telegram
-        </a>
-        <a href="#" class="btn-max btn-max-lg" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс">
-          <svg width="26" height="26"><use href="#max-icon"/></svg>
-        </a>
+        <div class="order-wrap" id="orderWrap">
+          <button class="btn btn-blush btn-lg" id="orderBtn"
+                  style="box-shadow:0 6px 24px rgba(233,196,187,.55);"
+                  aria-haspopup="true" aria-expanded="false">
+            Заказать
+            <svg class="order-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="order-drop" role="menu">
+            <a href="https://t.me/+79309330601" target="_blank" rel="noopener noreferrer" role="menuitem">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-2.012 9.47c-.145.648-.537.806-1.084.502l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.06 14.66l-2.948-.92c-.64-.204-.653-.64.136-.95l11.521-4.44c.535-.194 1.003.131.793.898z"/></svg>
+              Telegram
+            </a>
+            <a href="#" target="_blank" rel="noopener noreferrer" role="menuitem" aria-label="Написать в Макс" class="order-max-link">
+              <svg width="20" height="20"><use href="#max-icon"/></svg>
+              Макс
+            </a>
+            <a href="https://flowwow.com/shop/kroshkaf-1570/" target="_blank" rel="noopener noreferrer" role="menuitem">
+              <svg width="20" height="20" viewBox="36 36 128 128" fill="#FF7663"><path d="M137.503 108.737C121.169 108.737 107.834 123.55 100.336 143.852V133.365C100.336 115.558 93.5056 108.737 76.1721 108.737H55C58.3321 134.862 76.1654 154 100.836 154C124.001 154 144.333 134.197 144.333 115.558C144.333 110.734 142.334 108.737 137.503 108.737ZM137.169 65.6371C137.169 55.9816 135.003 48.3291 130.838 48.3291C126.673 48.3291 120.835 55.3162 115.837 65.138C111.832 53.4862 107.001 46.0001 102.002 46.0001C97.0043 46.0001 90.5001 53.4862 84.5023 65.138C79.6708 54.6507 73.9996 49.3273 70.3343 49.3273C67.1688 49.3273 65.3361 52.6544 64.0033 57.8116C62.6705 62.9687 62.1707 69.4633 62.1707 74.9531C62.1707 93.9247 81.5034 104.412 100.836 104.412C117.503 104.412 128.506 99.0884 133.171 90.4311C136.836 83.7768 137.169 75.7849 137.169 65.6371Z"/></svg>
+              Flowwow
+            </a>
+          </div>
+        </div>
         <a href="#menu" class="btn btn-ghost">Смотреть меню ↓</a>
       </div>
       <div class="bubbles">
@@ -849,6 +893,10 @@
       </a>
       <a href="#" class="btn-max" target="_blank" rel="noopener noreferrer" aria-label="Написать в Макс">
         <svg width="22" height="22"><use href="#max-icon"/></svg>
+      </a>
+      <a href="https://flowwow.com/shop/kroshkaf-1570/" target="_blank" rel="noopener noreferrer"
+         class="btn-max" aria-label="Открыть на Flowwow" style="background:var(--blush);color:var(--text);">
+        <svg width="20" height="20" viewBox="36 36 128 128" fill="currentColor"><path d="M137.503 108.737C121.169 108.737 107.834 123.55 100.336 143.852V133.365C100.336 115.558 93.5056 108.737 76.1721 108.737H55C58.3321 134.862 76.1654 154 100.836 154C124.001 154 144.333 134.197 144.333 115.558C144.333 110.734 142.334 108.737 137.503 108.737ZM137.169 65.6371C137.169 55.9816 135.003 48.3291 130.838 48.3291C126.673 48.3291 120.835 55.3162 115.837 65.138C111.832 53.4862 107.001 46.0001 102.002 46.0001C97.0043 46.0001 90.5001 53.4862 84.5023 65.138C79.6708 54.6507 73.9996 49.3273 70.3343 49.3273C67.1688 49.3273 65.3361 52.6544 64.0033 57.8116C62.6705 62.9687 62.1707 69.4633 62.1707 74.9531C62.1707 93.9247 81.5034 104.412 100.836 104.412C117.503 104.412 128.506 99.0884 133.171 90.4311C136.836 83.7768 137.169 75.7849 137.169 65.6371Z"/></svg>
       </a>
     </div>
   </div>
@@ -1403,7 +1451,24 @@ window.addEventListener('scroll', () => {
 btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
 /* ── MAX LINKS ────────────────────────────────────────────────────── */
-document.querySelectorAll('a[aria-label="Написать в Макс"]').forEach(a => a.href = MAX);
+document.querySelectorAll('a[aria-label="Написать в Макс"], a.order-max-link').forEach(a => a.href = MAX);
+
+// Order dropdown
+(function() {
+  const wrap = document.getElementById('orderWrap');
+  const btn  = document.getElementById('orderBtn');
+  if (!wrap || !btn) return;
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = wrap.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', () => {
+    wrap.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  });
+  wrap.querySelector('.order-drop').addEventListener('click', e => e.stopPropagation());
+})();
 
 /* ── SMOOTH NAV SCROLL ────────────────────────────────────────────── */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
